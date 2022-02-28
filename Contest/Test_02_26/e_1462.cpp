@@ -22,7 +22,7 @@ ll vis[N], dis[N], tmp[N];
 ll tot;
 ll inf = 0x7fffffffffffffff;
 ll n, m, hp;
-std::queue<ll> q;
+priority_queue<pair<ll, ll>> q;
 
 void add_edge(ll x, ll y, ll w) {
     edges[++tot].to = y;
@@ -34,26 +34,19 @@ void add_edge(ll x, ll y, ll w) {
 ll check(ll x) {
     if (x < nodes[1].money || x < nodes[n].money)
         return 0;
-    for (ll i = 1; i <= n; i++) {
+    for (ll i = 1; i <= n; i++)
         dis[i] = inf;
-        if (nodes[i].money > x)
-            vis[i] = 1;
-        else
-            vis[i] = 0;
-    }
+
     dis[1] = 0;
-    q.push(1);
+    q.push(make_pair(0, 1));
     while (!q.empty()) {
-        ll now = q.front();
+        ll now = q.top().second;
         q.pop();
-        if (vis[now])
-            continue;
-        vis[now] = 1;
         for (ll i = nodes[now].first; i; i = edges[i].next) {
             ll y = edges[i].to;
             if (nodes[y].money <= x && dis[y] > edges[i].weight + dis[now]) {
                 dis[y] = edges[i].weight + dis[now];
-                q.push(y);
+                q.push(make_pair(-dis[y], y));
             }
         }
     }
